@@ -18,6 +18,10 @@ public final class Constants {
         public static final int RightDriveTalonPort = 3;
     }
 
+    public static final class VisionConstants {
+        public static final String CameraName = "RoboticArmArducam";
+    }
+
     public static final class USBOrder {
         public static final int Zero = 0;
         public static final int One = 1;

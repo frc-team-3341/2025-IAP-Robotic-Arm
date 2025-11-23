@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-import com.revrobotics.ColorSensorV3;
+import com.revrobotics.ColorSensorV3; 
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorMatch;
 
@@ -52,7 +52,6 @@ public class ColorSensor extends SubsystemBase {
         } else {
           colorString = "Unknown";
         }
-
     SmartDashboard.putNumber("Red", detectedColor.red);
     SmartDashboard.putNumber("Green", detectedColor.green);
     SmartDashboard.putNumber("Blue", detectedColor.blue);

@@ -29,12 +29,12 @@ public class RobotContainer {
 
   private final TankDrive tankDrive = new TankDrive(dt, joy1);
 
-  double setpoint = 5.0;
+  double setpoint = 1.0;
 
   private final Autodrive autodrive = new Autodrive(dt, setpoint);
 
-  private final PIDTurn pidTurn = new PIDTurn(dt, 90.0);
-  
+  private final DriveToTarget driveToTarget = new DriveToTarget(dt, new Vision(), joy1);
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     dt.setDefaultCommand(tankDrive);
@@ -62,15 +62,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return autodrive;
-    /*return new SequentialCommandGroup( 
-      new Autodrive(dt, 1.0), 
-      new PIDTurn(dt, 90), 
-      new Autodrive(dt, 1.0),
-      new PIDTurn(dt, 90),
-      new Autodrive(dt, 1.0),
-      new PIDTurn(dt, 90),
-      new Autodrive(dt, 1.0)
-      );*/
+    return driveToTarget; 
   }
 }

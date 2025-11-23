@@ -74,7 +74,7 @@ public class Intake extends SubsystemBase {
   
       public Command intake() {
           return this.runOnce(() -> {
-              intakeMotor1.set(0.1);
+              intakeMotor1.set(0.3);
               probablyHasintake = true;
               probablyHasintake = false;
           });
@@ -82,7 +82,7 @@ public class Intake extends SubsystemBase {
   
       public Command outake() {
         return this.runOnce(() -> {
-            intakeMotor1.set(0.1);
+            intakeMotor1.set(-0.3);
             probablyHasintake = false;
         });
     }

@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -23,7 +24,7 @@ public class RobotContainer {
 
   
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final Joystick joy1 = new Joystick(Constants.USBOrder.Zero);
+  private final CommandXboxController joy1 = new CommandXboxController(Constants.USBOrder.Zero);
 
   private final DriveTrain dt = new DriveTrain();
 
@@ -34,10 +35,12 @@ public class RobotContainer {
   private final Autodrive autodrive = new Autodrive(dt, setpoint);
 
   private final PIDTurn pidTurn = new PIDTurn(dt, 90.0);
+  private Intake intake = new Intake();
   
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     dt.setDefaultCommand(tankDrive);
+
     // Configure the trigger bindings
     configureBindings();
   }
@@ -52,7 +55,9 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
- 
+      joy1.a().whileTrue(intake.intake()).onFalse(intake.stopintake());
+      joy1.b().whileTrue(intake.outake()).onFalse(intake.stopintake());
+
   }
 
   /**

@@ -12,7 +12,6 @@ public class PIDTurn extends Command {
   DriveTrain dt;
   double setpointAngle;
   PIDController pid = new PIDController(0.00333333333, 0.005, 0);//This is the constructor. Kp, ki, and kd are constants
-  int motorSign;
 
   /** Creates a new PIDTurn. */
   public PIDTurn(DriveTrain dt, double setpointAngle) {
@@ -21,12 +20,6 @@ public class PIDTurn extends Command {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(dt);
     pid.setTolerance(5.0);
-
-    if (setpointAngle >= 0){ //If the motor is one, it is a counterclockwise turn
-      motorSign = 1;
-    } else{
-    motorSign = -1;
-  }
   }
 
   // Called when the command is initially scheduled.
@@ -41,7 +34,7 @@ public class PIDTurn extends Command {
   @Override
   public void execute() {
     double output = pid.calculate(dt.getAngle(), setpointAngle);
-    dt.tankDrive(-motorSign*output, motorSign*output); //one of the motors is negative so that the robot turns
+    dt.tankDrive(-output, output); //one of the motors is negative so that the robot turns
   }
   
 

@@ -103,15 +103,9 @@ public class DriveTrain extends SubsystemBase {
  
   public void PIDTurn(double setpointAngle){
     PIDController pid = new PIDController(0.00333333333, 0.005, 0);//This is the constructor. Kp, ki, and kd are constants
-    int motorSign = 1;
-    if (setpointAngle < 0){ //If the motor is one, it is a CCW turn
-      motorSign = 1;
-    } else{
-      motorSign = -1; //turns CW
-    }
 
     double output = pid.calculate(this.getAngle(), setpointAngle);
-    this.tankDrive(-motorSign*output, motorSign*output); 
+    this.tankDrive(-output, output); 
   }
 
   public void resetEncoders() {

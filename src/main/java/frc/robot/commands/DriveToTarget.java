@@ -41,10 +41,10 @@ public class DriveToTarget extends Command {
   @Override
   public void execute() {
     if(vision.hasTarget()){
-        dt.PIDTurn(vision.getYaw());
-        if (Math.abs(dt.getAngle()) - Math.abs(vision.getYaw()) < padding) {
-            isAligned = true;
+        while(Math.abs(dt.getAngle()) - Math.abs(vision.getYaw()) < padding){ //TO-DO: Check what yaw is and what dt.getAngle() returns
+          dt.PIDTurn(vision.getYaw());
         }
+        isAligned = true;
     }
   }
 

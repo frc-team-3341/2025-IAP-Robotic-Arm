@@ -101,9 +101,8 @@ public class DriveTrain extends SubsystemBase {
     rightDriveTalon.set(rightSpeed);
   }
  
-  public void PIDTurn(double setpointAngle){
+  public void PIDTurn(double setpointAngle) {
     PIDController pid = new PIDController(0.00333333333, 0.005, 0);//This is the constructor. Kp, ki, and kd are constants
-
     double output = pid.calculate(this.getAngle(), setpointAngle);
     this.tankDrive(-output, output); 
   }

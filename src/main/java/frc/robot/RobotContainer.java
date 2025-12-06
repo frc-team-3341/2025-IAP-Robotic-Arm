@@ -31,8 +31,6 @@ public class RobotContainer {
 
   double setpoint = 1.0;
 
-  private final Autodrive autodrive = new Autodrive(dt, setpoint);
-
   private final DriveToTarget driveToTarget = new DriveToTarget(dt, new Vision(), joy1);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -52,7 +50,7 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
- 
+    
   }
 
   /**

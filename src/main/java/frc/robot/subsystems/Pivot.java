@@ -20,8 +20,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Pivot extends SubsystemBase {
     double setpoint;
-
-    private final SparkMax pivotMotor = new SparkMax(0, MotorType.kBrushless); //insert value
+    public SparkLimitSwitch FWDLimit;
+    public SparkLimitSwitch REVLimit;
+    private final SparkMax pivotMotor = new SparkMax(8, MotorType.kBrushless); //insert value
     
     //limit switch FWD and REV soft
     private final double forwardSoftLimit = 0.00; //insert value
@@ -58,6 +59,11 @@ public class Pivot extends SubsystemBase {
 
         //absolute encoder zeroOffSet
         //absolute encoder zeroCentered
+        LimitSwitchConfig limitSwitchConfig = new LimitSwitchConfig();
+        limitSwitchConfig.forwardLimitSwitchType(Type.kNormallyClosed);
+        limitSwitchConfig.reverseLimitSwitchType(Type.kNormallyClosed);
+        limitSwitchConfig.forwardLimitSwitchEnabled(true);
+        limitSwitchConfig.reverseLimitSwitchEnabled(true);
 
         //set up limit switch (soft and hard) configs
         //soft
@@ -69,7 +75,10 @@ public class Pivot extends SubsystemBase {
         softLimitConfig.reverseSoftLimit(reverseSoftLimit);
         
         pivotConfig.apply(softLimitConfig);
+        pivotConfig.apply(limitSwitchConfig);
         
+        FWDLimit = pivotMotor.getForwardLimitSwitch();
+        REVLimit = pivotMotor.getReverseLimitSwitch();
     }
     
     /*public Command toggleTeleop() {
@@ -84,7 +93,7 @@ public class Pivot extends SubsystemBase {
     }
     public Command movePivotDown() {
         return this.runOnce(() -> {
-            setpoint += 0; //change set point value
+            setpoint -= 0.02; //change set point value
             setpoint = Math.max(setpoint, forwardSoftLimit); //check absolute encoder for what it's min or max is
             this.pidPivot.setReference(setpoint, SparkMax.ControlType.kPosition);
             });
@@ -92,7 +101,7 @@ public class Pivot extends SubsystemBase {
 
     public Command movePivotUp(){
         return this.runOnce(() -> {
-                setpoint += 0; // change set point value 
+                setpoint += 0.02; // change set point value 
                 setpoint = Math.min(setpoint, reverseSoftLimit); //check absolute encoder for what it's min or max is
                 this.pidPivot.setReference(setpoint, SparkMax.ControlType.kPosition);
         });

@@ -23,18 +23,19 @@ public class RobotContainer {
 
   
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final Joystick joy1 = new Joystick(Constants.USBOrder.Zero);
+  private final CommandXboxController joy1 = new CommandXboxController(Constants.USBOrder.Zero);
 
   private final DriveTrain dt = new DriveTrain();
 
   private final TankDrive tankDrive = new TankDrive(dt, joy1);
 
-  double setpoint = 1.0;
+  double setpoint = 5.0;
 
   private final Autodrive autodrive = new Autodrive(dt, setpoint);
 
-  private final DriveToTarget driveToTarget = new DriveToTarget(dt, new Vision(), joy1);
-
+  private final PIDTurn pidTurn = new PIDTurn(dt, 90.0);
+  private Pivot pivot = new Pivot();
+  
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     dt.setDefaultCommand(tankDrive);
@@ -52,7 +53,8 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
- 
+      joy1.a().whileTrue(pivot.movePivotUp()).onFalse(pivot.stopPivot());
+      joy1.b().whileTrue(pivot.movePivotDown()).onFalse(pivot.stopPivot());
   }
 
   /**
@@ -62,6 +64,15 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return driveToTarget; 
+    return autodrive;
+    /*return new SequentialCommandGroup( 
+      new Autodrive(dt, 1.0), 
+      new PIDTurn(dt, 90), 
+      new Autodrive(dt, 1.0),
+      new PIDTurn(dt, 90),
+      new Autodrive(dt, 1.0),
+      new PIDTurn(dt, 90),
+      new Autodrive(dt, 1.0)
+      );*/
   }
 }

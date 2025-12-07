@@ -35,6 +35,8 @@ public class RobotContainer {
 
   private final PIDTurn pidTurn = new PIDTurn(dt, 90.0);
   
+  private final ColorSensor colorSensor = new ColorSensor();
+  ;
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     dt.setDefaultCommand(tankDrive);

@@ -24,8 +24,8 @@ public class Pivot extends SubsystemBase {
     private final SparkMax pivotMotor = new SparkMax(0, MotorType.kBrushless); //insert value
     
     //limit switch FWD and REV soft
-    private final double forwardSoftLimit = 0.00;
-    private final double reverseSoftLimit = 0.00;
+    private final double forwardSoftLimit = 0.00; //insert value
+    private final double reverseSoftLimit = 0.00; //insert value
     //absolute encoder
     AbsoluteEncoder absEncoder;
     
@@ -46,7 +46,7 @@ public class Pivot extends SubsystemBase {
         pivotMotor.configure(pivotConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         //set up PID constants
-        pivotConfig.closedLoop.pid(
+        pivotConfig.closedLoop.pid( // insert values for pid 
             0,
             0,
             0
@@ -79,21 +79,21 @@ public class Pivot extends SubsystemBase {
     }*/
     public Command stopPivot(){
         return this.runOnce(() -> {
-            pivotMotor.set(0.0);
+            pivotMotor.set(0.0); 
         });
     }
     public Command movePivotDown() {
         return this.runOnce(() -> {
-            setpoint += 0; //set setpoint
-            setpoint = Math.max(setpoint, forwardSoftLimit); //check absolute encoder for min or max 
+            setpoint += 0; //change set point value
+            setpoint = Math.max(setpoint, forwardSoftLimit); //check absolute encoder for what it's min or max is
             this.pidPivot.setReference(setpoint, SparkMax.ControlType.kPosition);
             });
         }
 
     public Command movePivotUp(){
         return this.runOnce(() -> {
-                setpoint += 0; // set setpoint
-                setpoint = Math.min(setpoint, reverseSoftLimit); //check absolute encoder for min or max 
+                setpoint += 0; // change set point value 
+                setpoint = Math.min(setpoint, reverseSoftLimit); //check absolute encoder for what it's min or max is
                 this.pidPivot.setReference(setpoint, SparkMax.ControlType.kPosition);
         });
     }

@@ -40,11 +40,11 @@ public class Vision extends SubsystemBase {
     try{
       if(result.hasTargets()){
         List<PhotonTrackedTarget> targets = result.getTargets();
-        PhotonTrackedTarget target = targets.get(0);
+        PhotonTrackedTarget target = targets.get(0); //gets the first target (whatever it considers the first target is)
+        targetYaw = target.getYaw();
         SmartDashboard.putNumber("Target ID", target.getFiducialId());
         SmartDashboard.putNumber("Target Yaw", target.getYaw());
         SmartDashboard.putBoolean("Target Found", true);
-        targetVisible = true;
       } else{
         SmartDashboard.putBoolean("Target Found", false);
       }
@@ -53,26 +53,9 @@ public class Vision extends SubsystemBase {
     }
     
   }
-
   public double getYaw(){
-    var results = bottomCamera.getAllUnreadResults();
-    if (!results.isEmpty()) {
-        // Camera processed a new frame since last
-        // Get the last one in the list.
-        var result = results.get(results.size() - 1);
-        if (result.hasTargets()) {
-            // At least one AprilTag was seen by the camera
-            for (var target : result.getTargets()) {
-                if (target.getFiducialId() == 18) {
-                    // Found Tag 7, record its information
-                    targetYaw = target.getYaw();
-                    targetVisible = true;
-                    return targetYaw;
-                }
-            }
-        }
-    }
-    return 0.0;
+    SmartDashboard.putNumber("Vision - Yaw", targetYaw);
+    return targetYaw;
   }
 
   public Boolean hasTarget(){

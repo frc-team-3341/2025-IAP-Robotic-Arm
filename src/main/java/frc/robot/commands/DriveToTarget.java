@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Vision;
@@ -16,8 +17,9 @@ public class DriveToTarget extends Command {
   DriveTrain dt;
   Vision vision;
   Joystick joy1;
-  int padding = 5; //if within 5 degrees of the setpoint angle
+  double padding = 5.0; //if within 5 degrees of the setpoint angle
   Boolean isAligned = false;
+  private double yawSetPoint = 0.0;
 
   public DriveToTarget(DriveTrain dt, Vision vision, Joystick joy1) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -33,18 +35,29 @@ public class DriveToTarget extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    dt.resetNavx();
+    isAligned = false;
+    while(dt.getNavxCalibrating()){
+      SmartDashboard.putBoolean("Navx Calibrating", dt.getNavxCalibrating());
+    }
+    SmartDashboard.putBoolean("Navx Calibrating", dt.getNavxCalibrating());
+    if(!dt.getNavxCalibrating()){
+      dt.resetNavx(); //reset navx to 0 if not calibrating
+    }
     dt.tankDrive(0,0); //stars at 0 on both motors so the robot does not power on and move away
+    yawSetPoint = vision.getYaw(); //get initial yaw value from vision
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+
+    dt.PIDTurn2(yawSetPoint); //use PID turn command to move motors
+
     if(vision.hasTarget()){
-        while(Math.abs(dt.getAngle()) - Math.abs(vision.getYaw()) < padding){ //TO-DO: Check what yaw is and what dt.getAngle() returns
-          dt.PIDTurn(vision.getYaw());
+        if(Math.abs(vision.getYaw()) < padding){
+          SmartDashboard.putBoolean("isAligned", isAligned); 
+          isAligned = true; 
         }
-        isAligned = true;
     }
   }
 

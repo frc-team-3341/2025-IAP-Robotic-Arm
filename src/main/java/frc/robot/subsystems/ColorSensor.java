@@ -21,10 +21,14 @@ public class ColorSensor extends SubsystemBase {
   private final ColorSensorV3 m_colorSensor = new ColorSensorV3(i2cPort);
   private final ColorMatch m_colorMatcher = new ColorMatch();
 
+  //divide each number rgb by 255
+  //ex: new Color(36/255, 109/255, 109/255) 
+  //rgb of blue: 36, 109, 109
   final Color kBlueTarget = new Color(0.143, 0.427, 0.429);
-    final Color kGreenTarget = new Color(0.197, 0.561, 0.240);
-    final Color kRedTarget = new Color(0.561, 0.232, 0.114);
-    final Color kYellowTarget = new Color(0.361, 0.524, 0.113);
+  final Color kGreenTarget = new Color(0.197, 0.561, 0.240);
+  final Color kRedTarget = new Color(0.561, 0.232, 0.114);
+  final Color kYellowTarget = new Color(0.361, 0.524, 0.113);
+  final Color kPurpleTarget = new Color(0.541, 0.169, 0.812);
     
   public ColorSensor() {
     
@@ -32,6 +36,7 @@ public class ColorSensor extends SubsystemBase {
       m_colorMatcher.addColorMatch(kGreenTarget);
       m_colorMatcher.addColorMatch(kRedTarget);
       m_colorMatcher.addColorMatch(kYellowTarget);    
+      m_colorMatcher.addColorMatch(kPurpleTarget); 
   }
 
   @Override
@@ -49,6 +54,8 @@ public class ColorSensor extends SubsystemBase {
           colorString = "Green";
         } else if (match.color == kYellowTarget) {
           colorString = "Yellow";
+        } else if (match.color == kPurpleTarget) {
+          colorString = "Purple";
         } else {
           colorString = "Unknown";
         }

@@ -61,7 +61,8 @@ public class ColorSensor extends SubsystemBase {
         }
     SmartDashboard.putNumber("Red", detectedColor.red);
     SmartDashboard.putNumber("Green", detectedColor.green);
-    SmartDashboard.putNumber("Blue", detectedColor.blue);
+    //martDashboard.putNumber("Blue", detectedColor.blue);
+    SmartDashboard.putNumber("Purple", detectedColor.blue);
     SmartDashboard.putNumber("Confidence", match.confidence);
     SmartDashboard.putString("Detected Color", colorString);
   }

@@ -109,11 +109,14 @@ public class DriveTrain extends SubsystemBase {
   // } 
 
   public void PIDTurn2(double setpoint){
-    PIDController pid = new PIDController(0.02, 0, 0);
+    PIDController pid = new PIDController(0.004, 0.005, 0.001);
     SmartDashboard.putNumber("Navx Angle", this.getAngle());
     double output = pid.calculate(this.getAngle(), setpoint);
     SmartDashboard.putNumber("Output from PID Controller: ", output);
-    this.tankDrive(-output, output);
+    if(Math.abs(output) > 0.5){ //If PID output is too high, cap it to 0.4
+      output = 0.4;
+    }
+    this.tankDrive(output, -output);
   }
 
   public void resetEncoders() {

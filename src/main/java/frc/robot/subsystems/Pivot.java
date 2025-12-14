@@ -22,7 +22,7 @@ public class Pivot extends SubsystemBase {
     double setpoint;
     public SparkLimitSwitch FWDLimit;
     public SparkLimitSwitch REVLimit;
-    private final SparkMax pivotMotor = new SparkMax(8, MotorType.kBrushless); //insert value
+    private final SparkMax pivotMotor = new SparkMax(6, MotorType.kBrushless); //insert value
     
     //limit switch FWD and REV soft
     private final double forwardSoftLimit = 0.00; //insert value
@@ -35,7 +35,7 @@ public class Pivot extends SubsystemBase {
     //enable teleop
     //boolean enableTeleop = false; 
 
-    PIDController pidController = new PIDController(0,0,0); //insert values
+    PIDController pidController = new PIDController(0.5,0,0); //insert values
 
     public Pivot() {
         //inset closed loop for pivot motor
@@ -48,7 +48,7 @@ public class Pivot extends SubsystemBase {
 
         //set up PID constants
         pivotConfig.closedLoop.pid( // insert values for pid 
-            0,
+            0.01,
             0,
             0
         );
@@ -93,26 +93,27 @@ public class Pivot extends SubsystemBase {
     }
     public Command movePivotDown() {
         return this.runOnce(() -> {
-            setpoint -= 0.02; //change set point value
-            setpoint = Math.max(setpoint, forwardSoftLimit); //check absolute encoder for what it's min or max is
-            this.pidPivot.setReference(setpoint, SparkMax.ControlType.kPosition);
+            pivotMotor.set(-0.05);
+            //setpoint = 0 .1; //change set point value
+            //setpoint = Math.max(setpoint, forwardSoftLimit); //check absolute encoder for what it's min or max is
+            //this.pidPivot.setReference(setpoint, SparkMax.ControlType.kPosition);
             });
         }
 
     public Command movePivotUp(){
         return this.runOnce(() -> {
-                setpoint += 0.02; // change set point value 
-                setpoint = Math.min(setpoint, reverseSoftLimit); //check absolute encoder for what it's min or max is
-                this.pidPivot.setReference(setpoint, SparkMax.ControlType.kPosition);
+            pivotMotor.set(0.05);   
+            // setpoint = 0.1; // change set point value 
+                //setpoint = Math.min(setpoint, reverseSoftLimit); //check absolute encoder for what it's min or max is
+                //this.pidPivot.setReference(setpoint, SparkMax.ControlType.kPosition);
         });
     }
 
     public void periodic() {
         //set up smart dashboard values
         
-        /*SmartDashboard.putNumber("Angle from 0", (153.2 - (absEncoder.getPosition() * 360.0)));
-        SmartDashboard.putNumber("Angle of Pivot", (absEncoder.getPosition() * 360.0));
-        SmartDashboard.putNumber("pivot pos", this.absEncoder.getPosition());*/
+        //SmartDashboard.putNumber("Angle of Pivot", (absEncoder.getPosition() * 360.0));
+        SmartDashboard.putNumber("pivot pos", this.absEncoder.getPosition());
     }
 
 }

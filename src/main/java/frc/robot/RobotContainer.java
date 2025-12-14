@@ -53,7 +53,7 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-      joy1.y().whileTrue(pivot.movePivotUp()).onFalse(pivot.stopPivot());
+      joy1.b().whileTrue(pivot.movePivotUp()).onFalse(pivot.stopPivot());
       joy1.a().whileTrue(pivot.movePivotDown()).onFalse(pivot.stopPivot());
   }
 

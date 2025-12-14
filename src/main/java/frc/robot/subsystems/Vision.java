@@ -7,8 +7,10 @@ package frc.robot.subsystems;
 import java.util.List;
 
 import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -18,6 +20,8 @@ public class Vision extends SubsystemBase {
     private final PhotonCamera bottomCamera = new PhotonCamera(Constants.VisionConstants.CameraName);
     /** Creates a new Vision. */
   private double targetYaw = 0.0;
+  Transform3d camToTarget;
+  double distToTarget = 0.0;
   private Boolean targetVisible = false;
   private Transform3d bestCameraToTarget;
 
@@ -43,6 +47,12 @@ public class Vision extends SubsystemBase {
 
         targetVisible = true;
         targetYaw = target.getYaw();
+        Transform3d camToTarget = target.getBestCameraToTarget();
+        double x = camToTarget.getTranslation().getX(); // forward
+        double y = camToTarget.getTranslation().getY(); // sideways
+
+        // planar distance ignoring vertical (Z)
+        distToTarget = Math.sqrt(x*x + y*y);
 
         SmartDashboard.putNumber("Target ID", target.getFiducialId());
         SmartDashboard.putNumber("Target Yaw", target.getYaw());
@@ -59,6 +69,16 @@ public class Vision extends SubsystemBase {
   public double getYaw(){
     SmartDashboard.putNumber("Vision - Yaw", targetYaw);
     return targetYaw;
+  }
+
+  public double getDistanceToTarget(){
+    return distToTarget;
+  }
+
+  public double getPowerOutputToDistance(double distToTarget, double currDist){
+    PIDController distancePID = new PIDController(0.002, 0, 0);
+    double output = distancePID.calculate(distToTarget, currDist);
+    return output;
   }
 
   public Boolean hasTarget(){

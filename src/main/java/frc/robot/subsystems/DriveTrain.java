@@ -108,17 +108,17 @@ public class DriveTrain extends SubsystemBase {
   //   this.tankDrive(-output, output); 
   // } 
 
-  public void PIDTurn2(double setpoint){
-    PIDController pid = new PIDController(0.02, 0.005, 0);
-    double output = pid.calculate(this.getAngle(), setpoint);
+  // public void PIDTurn2(double setpoint){
+  //   PIDController pid = new PIDController(0.02, 0.005, 0);
+  //   double output = pid.calculate(this.getAngle(), setpoint);
 
-    SmartDashboard.putNumber("Navx Angle", this.getAngle());
-    SmartDashboard.putNumber("Output from PID Controller: ", output);
-    if(Math.abs(output) > 0.5){ //If PID output is too high, cap it to 0.4
-      output = 0.4;
-    }
-    this.tankDrive(-output, output);
-  }
+  //   SmartDashboard.putNumber("Navx Angle", this.getAngle());
+  //   SmartDashboard.putNumber("Output from PID Controller: ", output);
+  //   if(Math.abs(output) > 0.5){ //If PID output is too high, cap it to 0.4
+  //     output = 0.4;
+  //   }
+  //   this.tankDrive(-output, output);
+  // }
 
   public void resetEncoders() {
     leftDriveTalon.setSelectedSensorPosition(0, 0, 10);

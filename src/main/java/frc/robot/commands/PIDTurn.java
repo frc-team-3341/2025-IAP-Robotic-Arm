@@ -33,8 +33,8 @@ public class PIDTurn extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double output = pid.calculate(dt.getAngle(), setpointAngle);
-    dt.tankDrive(-output, output); //one of the motors is negative so that the robot turns
+    double output = pid.calculate(dt.getAngle(), -30);
+    dt.tankDrive(output, output); //one of the motors is negative so that the robot turns
   }
   
 

@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -21,14 +22,20 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
 
-  
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final Joystick joy1 = new Joystick(Constants.USBOrder.Zero);
-
+  private final CommandXboxController joy1 = new CommandXboxController(Constants.USBOrder.Zero);
+  
+  // Subsystems
   private final DriveTrain dt = new DriveTrain();
+  private Intake intake = new Intake();
+  private Pivot pivot = new Pivot();
+  private final ColorSensor colorSensor = new ColorSensor();
 
+  // Commands
   private final TankDrive tankDrive = new TankDrive(dt, joy1);
 
+  
+  ;
   double setpoint = 30;
 
   private final PIDTurn pidTurn = new PIDTurn(dt, setpoint);
@@ -40,6 +47,7 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     dt.setDefaultCommand(tankDrive);
+
     // Configure the trigger bindings
     configureBindings();
   }
@@ -54,7 +62,11 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    
+      joy1.rightBumper().whileTrue(intake.intake()).onFalse(intake.stopintake());
+      joy1.leftBumper().whileTrue(intake.outake()).onFalse(intake.stopintake());
+
+      joy1.rightTrigger().whileTrue(pivot.movePivotUp()).onFalse(pivot.holdPivot());
+      joy1.leftTrigger().whileTrue(pivot.movePivotDown()).onFalse(pivot.holdPivot());
   }
 
   /**
@@ -64,6 +76,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return driveToTarget; 
+    return tankDrive;
   }
 }

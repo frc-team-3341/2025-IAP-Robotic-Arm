@@ -97,8 +97,8 @@ public class DriveTrain extends SubsystemBase {
   }
 
   public void tankDrive(double leftSpeed, double rightSpeed) {
-    leftDriveTalon.set(leftSpeed);
-    rightDriveTalon.set(rightSpeed);
+    leftDriveTalon.set(0.9 * leftSpeed);
+    rightDriveTalon.set(0.9 * rightSpeed);
   }
  
   // public void PIDTurn(double currentAngle) {

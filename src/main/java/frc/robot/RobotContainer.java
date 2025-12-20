@@ -36,7 +36,10 @@ public class RobotContainer {
 
   private final PIDTurn pidTurn = new PIDTurn(dt, 90.0);
   private Intake intake = new Intake();
+  private Pivot pivot = new Pivot();
   
+  private final ColorSensor colorSensor = new ColorSensor();
+  ;
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     dt.setDefaultCommand(tankDrive);
@@ -58,6 +61,8 @@ public class RobotContainer {
       joy1.a().whileTrue(intake.intake()).onFalse(intake.stopintake());
       joy1.b().whileTrue(intake.outake()).onFalse(intake.stopintake());
 
+      joy1.b().whileTrue(pivot.movePivotUp()).onFalse(pivot.stopPivot());
+      joy1.a().whileTrue(pivot.movePivotDown()).onFalse(pivot.stopPivot());
   }
 
   /**

@@ -6,27 +6,24 @@ package frc.robot.subsystems;
 
 import java.util.List;
 
-import org.ejml.equation.Variable;
 import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
-import frc.robot.RobotContainer;
-import frc.robot.commands.PIDTurn;
 
 public class Vision extends SubsystemBase {
     private final PhotonCamera bottomCamera = new PhotonCamera(Constants.VisionConstants.CameraName);
     /** Creates a new Vision. */
   private double targetYaw = 0.0;
+  Transform3d camToTarget;
+  double distToTarget = 0.0;
   private Boolean targetVisible = false;
+  private Transform3d bestCameraToTarget;
 
   public Vision() {
     bottomCamera.setPipelineIndex(0); //AprilTag
@@ -38,41 +35,50 @@ public class Vision extends SubsystemBase {
     // This method will be called once per scheduler run
     var result = bottomCamera.getLatestResult();
     try{
-      if(result.hasTargets()){
+      if(result.hasTargets()){ 
         List<PhotonTrackedTarget> targets = result.getTargets();
-        PhotonTrackedTarget target = targets.get(0);
+        PhotonTrackedTarget target = targets.get(0); //gets the first target (whatever it considers the first target is)
+        
+        //Test this: 
+        bestCameraToTarget = target.getBestCameraToTarget(); //Transform3d object (Get the transform that maps camera space (X = forward, Y = left, Z = up) to object/fiducial tag space (X forward, Y left, Z up) with the lowest reprojection error)
+        SmartDashboard.putNumber("Transform3d X ", bestCameraToTarget.getX());
+        SmartDashboard.putNumber("Transform3d y ", bestCameraToTarget.getY());
+        SmartDashboard.putNumber("Transform3d rotation ", bestCameraToTarget.getRotation().getAngle());
+
+        targetVisible = true;
+        targetYaw = target.getYaw();
+        Transform3d camToTarget = target.getBestCameraToTarget();
+        double x = camToTarget.getTranslation().getX(); // forward
+        double y = camToTarget.getTranslation().getY(); // sideways
+
+        // planar distance ignoring vertical (Z)
+        distToTarget = Math.sqrt(x*x + y*y);
+
         SmartDashboard.putNumber("Target ID", target.getFiducialId());
         SmartDashboard.putNumber("Target Yaw", target.getYaw());
-        SmartDashboard.putBoolean("Target Found", true);
-        targetVisible = true;
+        SmartDashboard.putBoolean("Target Found", targetVisible);
       } else{
-        SmartDashboard.putBoolean("Target Found", false);
+        targetVisible = false;
+        SmartDashboard.putBoolean("Target Found", targetVisible);
       }
     } catch (Exception e){
       System.out.println("No Target Found: " + e);
     }
     
   }
-
   public double getYaw(){
-    var results = bottomCamera.getAllUnreadResults();
-    if (!results.isEmpty()) {
-        // Camera processed a new frame since last
-        // Get the last one in the list.
-        var result = results.get(results.size() - 1);
-        if (result.hasTargets()) {
-            // At least one AprilTag was seen by the camera
-            for (var target : result.getTargets()) {
-                if (target.getFiducialId() == 18) {
-                    // Found Tag 7, record its information
-                    targetYaw = target.getYaw();
-                    targetVisible = true;
-                    return targetYaw;
-                }
-            }
-        }
-    }
-    return 0.0;
+    SmartDashboard.putNumber("Vision - Yaw", targetYaw);
+    return targetYaw;
+  }
+
+  public double getDistanceToTarget(){
+    return distToTarget;
+  }
+
+  public double getPowerOutputToDistance(double distToTarget, double currDist){
+    PIDController distancePID = new PIDController(0.002, 0, 0);
+    double output = distancePID.calculate(distToTarget, currDist);
+    return output;
   }
 
   public Boolean hasTarget(){

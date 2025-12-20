@@ -101,12 +101,24 @@ public class DriveTrain extends SubsystemBase {
     rightDriveTalon.set(0.9 * rightSpeed);
   }
  
-  public void PIDTurn(double setpointAngle){
-    PIDController pid = new PIDController(0.00333333333, 0.005, 0);//This is the constructor. Kp, ki, and kd are constants
+  // public void PIDTurn(double currentAngle) {
+  //   PIDController pid = new PIDController(0.02, 0, 0);//This is the constructor. Kp, ki, and kd are constants
+  //   double output = pid.calculate(currentAngle, 0);
+  //   SmartDashboard.putNumber("Output from PID Controller: ", output);
+  //   this.tankDrive(-output, output); 
+  // } 
 
-    double output = pid.calculate(this.getAngle(), setpointAngle);
-    this.tankDrive(-output, output); 
-  }
+  // public void PIDTurn2(double setpoint){
+  //   PIDController pid = new PIDController(0.02, 0.005, 0);
+  //   double output = pid.calculate(this.getAngle(), setpoint);
+
+  //   SmartDashboard.putNumber("Navx Angle", this.getAngle());
+  //   SmartDashboard.putNumber("Output from PID Controller: ", output);
+  //   if(Math.abs(output) > 0.5){ //If PID output is too high, cap it to 0.4
+  //     output = 0.4;
+  //   }
+  //   this.tankDrive(-output, output);
+  // }
 
   public void resetEncoders() {
     leftDriveTalon.setSelectedSensorPosition(0, 0, 10);
@@ -131,6 +143,10 @@ public class DriveTrain extends SubsystemBase {
     return navx.getAngle();
   }
 
+  public boolean getNavxCalibrating() {
+    return navx.isCalibrating();
+  }
+
   public void resetNavx() {
     navx.reset();
   }
@@ -141,7 +157,7 @@ public class DriveTrain extends SubsystemBase {
     SmartDashboard.putNumber("Left Output Voltage", leftDriveTalon.getMotorOutputVoltage());
     SmartDashboard.putNumber("Right Output Percent", rightDriveTalon.getMotorOutputPercent());
     SmartDashboard.putNumber("Right Output Voltage", rightDriveTalon.getMotorOutputVoltage());
-    SmartDashboard.putNumber("Angle", navx.getAngle());
+    SmartDashboard.putNumber("Navx Angle", navx.getAngle());
 
     LeftVoltage.setDouble(leftDriveTalon.getMotorOutputPercent());
     RightVoltage.setDouble(rightDriveTalon.getMotorOutputPercent());

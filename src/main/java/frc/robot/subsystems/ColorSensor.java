@@ -28,7 +28,7 @@ public class ColorSensor extends SubsystemBase {
   final Color kGreenTarget = new Color(0.197, 0.561, 0.240);
   final Color kRedTarget = new Color(0.561, 0.232, 0.114);
   final Color kYellowTarget = new Color(0.361, 0.524, 0.113);
-  final Color kPurpleTarget = new Color(0.541, 0.169, 0.812);
+  final Color kPurpleTarget = new Color(0.541, 0.169, 0.541);
     
   public ColorSensor() {
     
@@ -40,11 +40,9 @@ public class ColorSensor extends SubsystemBase {
   }
 
   public boolean isPurple(Color color) {
-    if(color == kPurpleTarget){
-      return true;
-    } else{
-      return false;
-    }
+    ColorMatchResult match = m_colorMatcher.matchClosestColor(color);
+    SmartDashboard.putString("Matched Color", match.color.toString());
+    return match.color == kPurpleTarget;
   }
 
   public Color getColor() {

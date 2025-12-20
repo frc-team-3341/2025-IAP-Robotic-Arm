@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
-  private final SparkMax intakeMotor1 = new SparkMax(25, MotorType.kBrushless);
+  private final SparkMax intakeMotor1 = new SparkMax(7, MotorType.kBrushless);
   private boolean intakePurpleCube = false;
   ColorSensor colorSensor = new ColorSensor();
 

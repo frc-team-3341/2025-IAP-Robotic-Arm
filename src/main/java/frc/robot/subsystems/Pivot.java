@@ -35,7 +35,7 @@ public class Pivot extends SubsystemBase {
     //enable teleop
     //boolean enableTeleop = false; 
 
-    PIDController pidController = new PIDController(0.5,0,0); //insert values
+    PIDController pidController = new PIDController(0.01,0,0); //insert values
 
     public Pivot() {
         //inset closed loop for pivot motor
@@ -55,7 +55,6 @@ public class Pivot extends SubsystemBase {
         pivotConfig.closedLoop.feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
 
         pivotConfig.smartCurrentLimit(0); //inset values
-        
 
         //absolute encoder zeroOffSet
         //absolute encoder zeroCentered

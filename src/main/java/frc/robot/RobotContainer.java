@@ -29,7 +29,9 @@ public class RobotContainer {
 
   private final TankDrive tankDrive = new TankDrive(dt, joy1);
 
-  double setpoint = 1.0;
+  double setpoint = 30;
+
+  private final PIDTurn pidTurn = new PIDTurn(dt, setpoint);
 
   private final Vision vision = new Vision();
 

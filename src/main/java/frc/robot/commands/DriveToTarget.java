@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -17,9 +18,10 @@ public class DriveToTarget extends Command {
   DriveTrain dt;
   Vision vision;
   Joystick joy1;
-  double padding = 5.0; //if within 5 degrees of the setpoint angle
   Boolean isAligned = false;
   private double yawSetPoint = 0.0;
+
+  PIDController pid = new PIDController(0.02, 0.005, 0);//This is the constructor. Kp, ki, and kd are constants
 
   public DriveToTarget(DriveTrain dt, Vision vision, Joystick joy1) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -28,7 +30,7 @@ public class DriveToTarget extends Command {
     this.dt = dt;
     this.vision = vision;
     this.joy1 = joy1;
-
+    pid.setTolerance(5.0); //use with atSetpoint() method to determine if on target
     addRequirements(dt, vision); //only for subsystems, not commands
   }
 
@@ -39,39 +41,41 @@ public class DriveToTarget extends Command {
     dt.resetNavx();
     dt.tankDrive(0,0); //starts at 0 on both motors so the robot does not power on and move away
     yawSetPoint = vision.getYaw(); //get initial yaw value from vision (0.0 deg if no target found)
+    SmartDashboard.putNumber("Initial Yaw Setpoint:", yawSetPoint);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-   while(!vision.hasTarget()){
-      double speed = 0.3;
-      dt.tankDrive(-speed, speed);
-      SmartDashboard.putNumber("Turning to find Target Speed:", speed);
-    }
+  //  while(!vision.hasTarget()){
+  //     double speed = 0.3;
+  //     dt.tankDrive(-speed, speed);
+  //     SmartDashboard.putNumber("Turning to find Target Speed:", speed);
+  //   }
+
+      double output = pid.calculate(dt.getAngle(), yawSetPoint);
+
+      SmartDashboard.putNumber("Command: Navx Angle", dt.getAngle());
+      SmartDashboard.putNumber("Output from PID Controller: ", output);
+      if(Math.abs(output) > 0.5){ //If PID output is too high, cap it to 0.4
+        output = 0.4;
+      }
+      dt.tankDrive(-output, output);
+
+        // dt.resetEncoders();
+        // double distanceToTarget = vision.getDistanceToTarget();
+        // SmartDashboard.putNumber("Distance to Target (m): ", distanceToTarget);
+        // double ticksToMeters = dt.metersToTicks(distanceToTarget);
+        // SmartDashboard.putNumber("Current Distance (m): ", ticksToMeters);
+
+        // double output = vision.getPowerOutputToDistance(distanceToTarget, ticksToMeters);
+        // SmartDashboard.putNumber("Drive to Target Output: ", output);
+        // if(Math.abs(output) > 0.4){ //If PID output is too high, cap it to 0.4
+        //   output = 0.3;
+        // }
+        // dt.tankDrive(output, output);
+        
     
-    dt.PIDTurn2(yawSetPoint); //use PID turn command to move motors
-    SmartDashboard.putBoolean("isAligned", isAligned); 
-
-    if(vision.hasTarget()){
-        if(Math.abs(vision.getYaw()) - Math.abs(dt.getAngle()) < padding){
-          SmartDashboard.putBoolean("isAligned", isAligned); 
-          isAligned = true;
-
-          dt.resetEncoders();
-          double distanceToTarget = vision.getDistanceToTarget();
-          SmartDashboard.putNumber("Distance to Target (m): ", distanceToTarget);
-          double ticksToMeters = dt.metersToTicks(distanceToTarget);
-          SmartDashboard.putNumber("Current Distance (m): ", ticksToMeters);
-
-          double output = vision.getPowerOutputToDistance(distanceToTarget, ticksToMeters);
-          SmartDashboard.putNumber("Drive to Target Output: ", output);
-          if(Math.abs(output) > 0.4){ //If PID output is too high, cap it to 0.4
-            output = 0.3;
-          }
-          dt.tankDrive(output, output);
-        }
-    }
   }
 
   // Called once the command ends or is interrupted.

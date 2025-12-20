@@ -39,6 +39,18 @@ public class ColorSensor extends SubsystemBase {
       m_colorMatcher.addColorMatch(kPurpleTarget); 
   }
 
+  public boolean isPurple(Color color) {
+    if(color == kPurpleTarget){
+      return true;
+    } else{
+      return false;
+    }
+  }
+
+  public Color getColor() {
+    return m_colorSensor.getColor();
+  }
+
   @Override
   public void periodic() {
         // This method will be called once per scheduler run

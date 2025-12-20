@@ -22,23 +22,19 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
 
-  
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController joy1 = new CommandXboxController(Constants.USBOrder.Zero);
-
+  
+  // Subsystems
   private final DriveTrain dt = new DriveTrain();
-
-  private final TankDrive tankDrive = new TankDrive(dt, joy1);
-
-  double setpoint = 5.0;
-
-  private final Autodrive autodrive = new Autodrive(dt, setpoint);
-
-  private final PIDTurn pidTurn = new PIDTurn(dt, 90.0);
   private Intake intake = new Intake();
   private Pivot pivot = new Pivot();
-  
   private final ColorSensor colorSensor = new ColorSensor();
+
+  // Commands
+  private final TankDrive tankDrive = new TankDrive(dt, joy1);
+
+  
   ;
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -61,8 +57,8 @@ public class RobotContainer {
       joy1.a().whileTrue(intake.intake()).onFalse(intake.stopintake());
       joy1.b().whileTrue(intake.outake()).onFalse(intake.stopintake());
 
-      joy1.b().whileTrue(pivot.movePivotUp()).onFalse(pivot.stopPivot());
-      joy1.a().whileTrue(pivot.movePivotDown()).onFalse(pivot.stopPivot());
+      joy1.x().whileTrue(pivot.movePivotUp()).onFalse(pivot.stopPivot());
+      joy1.y().whileTrue(pivot.movePivotDown()).onFalse(pivot.stopPivot());
   }
 
   /**
@@ -72,15 +68,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return autodrive;
-    /*return new SequentialCommandGroup( 
-      new Autodrive(dt, 1.0), 
-      new PIDTurn(dt, 90), 
-      new Autodrive(dt, 1.0),
-      new PIDTurn(dt, 90),
-      new Autodrive(dt, 1.0),
-      new PIDTurn(dt, 90),
-      new Autodrive(dt, 1.0)
-      );*/
+    return tankDrive;
   }
 }

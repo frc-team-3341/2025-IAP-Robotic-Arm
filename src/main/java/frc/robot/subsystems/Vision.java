@@ -39,12 +39,8 @@ public class Vision extends SubsystemBase {
         List<PhotonTrackedTarget> targets = result.getTargets();
         PhotonTrackedTarget target = targets.get(0); //gets the first target (whatever it considers the first target is)
         
-        //Test this: 
         bestCameraToTarget = target.getBestCameraToTarget(); //Transform3d object (Get the transform that maps camera space (X = forward, Y = left, Z = up) to object/fiducial tag space (X forward, Y left, Z up) with the lowest reprojection error)
-        SmartDashboard.putNumber("Transform3d X ", bestCameraToTarget.getX());
-        SmartDashboard.putNumber("Transform3d y ", bestCameraToTarget.getY());
-        SmartDashboard.putNumber("Transform3d rotation ", bestCameraToTarget.getRotation().getAngle());
-
+        
         targetVisible = true;
         targetYaw = target.getYaw();
         Transform3d camToTarget = target.getBestCameraToTarget();
@@ -53,7 +49,9 @@ public class Vision extends SubsystemBase {
 
         // planar distance ignoring vertical (Z)
         distToTarget = Math.sqrt(x*x + y*y);
-
+        SmartDashboard.putNumber("Y dist", y);
+        SmartDashboard.putNumber("X dist", x);
+        SmartDashboard.putNumber("dis", distToTarget);
         SmartDashboard.putNumber("Target ID", target.getFiducialId());
         SmartDashboard.putNumber("Target Yaw", target.getYaw());
         SmartDashboard.putBoolean("Target Found", targetVisible);
@@ -67,7 +65,6 @@ public class Vision extends SubsystemBase {
     
   }
   public double getYaw(){
-    SmartDashboard.putNumber("Vision - Yaw", targetYaw);
     return targetYaw;
   }
 

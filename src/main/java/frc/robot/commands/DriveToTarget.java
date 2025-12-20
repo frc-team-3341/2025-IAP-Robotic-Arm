@@ -18,7 +18,7 @@ public class DriveToTarget extends Command {
   DriveTrain dt;
   Vision vision;
   Joystick joy1;
-  Boolean isAligned = false;
+  boolean isAligned = false;
   private double yawSetPoint = 0.0;
 
   PIDController pid = new PIDController(0.02, 0.005, 0);//This is the constructor. Kp, ki, and kd are constants
@@ -57,11 +57,15 @@ public class DriveToTarget extends Command {
 
       SmartDashboard.putNumber("Command: Navx Angle", dt.getAngle());
       SmartDashboard.putNumber("Output from PID Controller: ", output);
-      if(Math.abs(output) > 0.5){ //If PID output is too high, cap it to 0.4
-        output = 0.4;
-      }
-      dt.tankDrive(-output, output);
 
+      if(Math.abs(output) > 0.5) { //If PID output is too high, cap it to 0.4
+        output = Math.copySign(0.4, output); // Preserves sign, caps magnitude
+    }
+      dt.tankDrive(-output, output);
+      
+      if(pid.atSetpoint()) {
+        isAligned = true;
+      }
         // dt.resetEncoders();
         // double distanceToTarget = vision.getDistanceToTarget();
         // SmartDashboard.putNumber("Distance to Target (m): ", distanceToTarget);
